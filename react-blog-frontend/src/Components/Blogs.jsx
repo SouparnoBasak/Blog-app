@@ -5,7 +5,9 @@ const Blogs = () => {
   const [blogs, setBlogs] = useState();
   const [keyword, setKeyword] = useState();
   const fetchBlogs = async () => {
-    const res = await fetch("http://localhost:8000/api/blogs/");
+    const res = await fetch(
+      "https://blog-app-production-57e8.up.railway.app/api/blogs/"
+    );
     const result = await res.json();
     setBlogs(result.data);
     console.log(result);
@@ -14,7 +16,8 @@ const Blogs = () => {
     e.preventDefault();
     console.log(keyword);
     const res = await fetch(
-      "http://localhost:8000/api/blogs?keyword=" + keyword
+      "https://blog-app-production-57e8.up.railway.app/api/blogs?keyword=" +
+        keyword
     );
     const result = await res.json();
     setBlogs(result.data);

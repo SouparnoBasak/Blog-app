@@ -21,10 +21,13 @@ const EditBlog = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await fetch("http://localhost:8000/api/save-temp-image", {
-      method: "POST",
-      body: formData,
-    });
+    const res = await fetch(
+      "https://blog-app-production-57e8.up.railway.app/api/save-temp-image",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
 
     const result = await res.json();
 
@@ -43,7 +46,9 @@ const EditBlog = () => {
   } = useForm();
 
   const fetchBlog = async () => {
-    const res = await fetch("http://localhost:8000/api/blogs/" + params.id);
+    const res = await fetch(
+      "https://blog-app-production-57e8.up.railway.app/api/blogs/" + params.id
+    );
     const result = await res.json();
     setBlog(result.data);
     setHtml(result.data.description);
@@ -56,13 +61,16 @@ const EditBlog = () => {
 
   const formSubmit = async (data) => {
     const newData = { ...data, description: html, image_Id: imageId };
-    const res = await fetch("http://localhost:8000/api/blogs/" + params.id, {
-      method: "put",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(newData),
-    });
+    const res = await fetch(
+      "https://blog-app-production-57e8.up.railway.app/api/blogs/" + params.id,
+      {
+        method: "put",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(newData),
+      }
+    );
     const result = await res.json();
     if (result.status == false) {
       alert(result.errors);

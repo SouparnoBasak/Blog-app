@@ -5,7 +5,9 @@ const BlogDetail = () => {
   const [blog, setBlog] = useState([]);
   const params = useParams();
   const fetchBlog = async () => {
-    const res = await fetch("http://localhost:8000/api/blogs/" + params.id);
+    const res = await fetch(
+      "https://blog-app-production-57e8.up.railway.app/api/blogs/" + params.id
+    );
     const result = await res.json();
     setBlog(result.data);
   };

@@ -9,9 +9,12 @@ const BlogCard = ({ blog, blogs, setBlogs }) => {
   };
   const deleteBlog = (id) => {
     if (confirm("Are you sure you want to delete?")) {
-      const res = fetch("http://localhost:8000/api/blogs/" + id, {
-        method: "delete",
-      });
+      const res = fetch(
+        "https://blog-app-production-57e8.up.railway.app/api/blogs/" + id,
+        {
+          method: "delete",
+        }
+      );
 
       const newBlogs = blogs.filter((blog) => blog.id != id);
       setBlogs(newBlogs);
