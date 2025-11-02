@@ -2,19 +2,15 @@ import React from "react";
 import { toast } from "react-toastify";
 
 const BlogCard = ({ blog, blogs, setBlogs }) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const showImage = (img) => {
-    return img
-      ? "http://localhost:8000/uploads/blogs/" + img
-      : "https://placehold.co/600x400";
+    return img ? img : "http://placehold.co/600x400";
   };
   const deleteBlog = (id) => {
     if (confirm("Are you sure you want to delete?")) {
-      const res = fetch(
-        "https://blog-app-production-57e8.up.railway.app/api/blogs/" + id,
-        {
-          method: "delete",
-        }
-      );
+      const res = fetch(`${API_BASE_URL}blogs/${id}`, {
+        method: "delete",
+      });
 
       const newBlogs = blogs.filter((blog) => blog.id != id);
       setBlogs(newBlogs);

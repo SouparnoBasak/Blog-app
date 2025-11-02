@@ -2,12 +2,11 @@ import React, { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
 
 const Blogs = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [blogs, setBlogs] = useState();
   const [keyword, setKeyword] = useState();
   const fetchBlogs = async () => {
-    const res = await fetch(
-      "https://blog-app-production-57e8.up.railway.app/api/blogs/"
-    );
+    const res = await fetch(`${API_BASE_URL}blogs/`);
     const result = await res.json();
     setBlogs(result.data);
     console.log(result);
@@ -15,10 +14,7 @@ const Blogs = () => {
   const searchBlogs = async (e) => {
     e.preventDefault();
     console.log(keyword);
-    const res = await fetch(
-      "https://blog-app-production-57e8.up.railway.app/api/blogs?keyword=" +
-        keyword
-    );
+    const res = await fetch(`${API_BASE_URL}blogs?keyword=${keyword}`);
     const result = await res.json();
     setBlogs(result.data);
   };

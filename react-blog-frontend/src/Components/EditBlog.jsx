@@ -6,6 +6,7 @@ import Editor from "react-simple-wysiwyg";
 import { toast } from "react-toastify";
 
 const EditBlog = () => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
   const [html, setHtml] = useState("");
   const [imageId, setImageId] = useState("");
   const [blog, setBlog] = useState([]);
@@ -21,13 +22,10 @@ const EditBlog = () => {
     const formData = new FormData();
     formData.append("image", file);
 
-    const res = await fetch(
-      "https://blog-app-production-57e8.up.railway.app/api/save-temp-image",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}save-temp-image`, {
+      method: "POST",
+      body: formData,
+    });
 
     const result = await res.json();
 
@@ -46,9 +44,7 @@ const EditBlog = () => {
   } = useForm();
 
   const fetchBlog = async () => {
-    const res = await fetch(
-      "https://blog-app-production-57e8.up.railway.app/api/blogs/" + params.id
-    );
+    const res = await fetch(`${API_BASE_URL}blogs/${params.id}`);
     const result = await res.json();
     setBlog(result.data);
     setHtml(result.data.description);
@@ -61,16 +57,13 @@ const EditBlog = () => {
 
   const formSubmit = async (data) => {
     const newData = { ...data, description: html, image_Id: imageId };
-    const res = await fetch(
-      "https://blog-app-production-57e8.up.railway.app/api/blogs/" + params.id,
-      {
-        method: "put",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(newData),
-      }
-    );
+    const res = await fetch(`${API_BASE_URL}blogs/${params.id}`, {
+      method: "put",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(newData),
+    });
     const result = await res.json();
     if (result.status == false) {
       alert(result.errors);
@@ -138,12 +131,7 @@ const EditBlog = () => {
                 id=""
                 className="form-control"
               />
-              {blog.image && (
-                <img
-                  className="w-25"
-                  src={`http://localhost:8000/uploads/blogs/${blog.image}`}
-                />
-              )}
+              {blog.image && <img className="w-25" src={blog.image} />}
             </div>
             <div className="mb-3">
               <label htmlFor="" className="form-label">
