@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Validator;
 class TempImageController extends Controller
 {
     public function store(Request $request){
-        return response()->json([
-                'env'=>env('APP_URL')
-            ]);
+        #return response()->json([
+         #       'env'=>config('cloudinary.cloud_url')
+          #  ]);
         #dd(env('CLOUDINARY_URL'));
         #$cloud_url="cloudinary://286799873931538:5PYAT6pURlJNVOcF4tuvYtUlEFw@dzf3tqgck";
         $validator=Validator::make($request->all(),[
@@ -50,8 +50,8 @@ class TempImageController extends Controller
 
         return response()->json([
             'status'=>true,
-            'message'=>'Iamge Uploaded successfuly',
-            'image'=>$UploadFileUrl
+            'message'=>'Image Uploaded successfuly',
+            'image'=>$tempImage
         ]);
     }
 }

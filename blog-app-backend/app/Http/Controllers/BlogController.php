@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use App\Models\Blog;
 use App\Models\TempImage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -58,15 +59,27 @@ class BlogController extends Controller
         $blog->save();
         $tempImage=TempImage::find($request->image_Id);
         if($tempImage!=null){
-            $imageExtArray=explode('.',$tempImage->name);
-            $ext=last($imageExtArray);
-            $imageName=time().'-'.$blog->id.'.'.$ext;
-            $blog->image=$imageName;
-            $blog->save();
+            try{
+                $url=$tempImage->name;
+                $path=parse_url($url,PHP_URL_PATH);
+                $segment=explode('/',$path);
+                $fwe=end($segment);
+                $file_name=pathinfo($fwe,PATHINFO_FILENAME);
+                $publicId="Blog_uploads/temp_images/".$file_name;
+                $newPublicId="Blog_uploads/blog_images/".$file_name;
 
-            $sourcePath=public_path('uploads/temp/'.$tempImage->name);
-            $destPath=public_path('uploads/blogs/'.$imageName);
-            File::copy($sourcePath,$destPath);
+                Cloudinary::destroy($newPublicId);
+                Cloudinary::rename($publicId,$newPublicId);
+                $newUrl=cloudinary()->getUrl($newPublicId);
+                $blog->image=$newUrl;
+                $blog->save();
+            }catch(\Throwable $e){
+                return response()->json([
+                'status'=>false,
+                'message'=>'Image Upload unsuccessful',
+                'error'=>$e->getMessage(),
+                ],500);
+            }
         }
         return response()->json([
                 'status'=>true,
@@ -103,16 +116,27 @@ class BlogController extends Controller
         $blog->save();
         $tempImage=TempImage::find($request->image_Id);
         if($tempImage!=null){
-            File::delete(public_path('uploads/blogs/'.$blog->image));
-            $imageExtArray=explode('.',$tempImage->name);
-            $ext=last($imageExtArray);
-            $imageName=time().'-'.$blog->id.'.'.$ext;
-            $blog->image=$imageName;
-            $blog->save();
+            try{
 
-            $sourcePath=public_path('uploads/temp/'.$tempImage->name);
-            $destPath=public_path('uploads/blogs/'.$imageName);
-            File::copy($sourcePath,$destPath);
+                $url=$tempImage->name;
+                $path=parse_url($url,PHP_URL_PATH);
+                $segment=explode('/',$path);
+                $fwe=end($segment);
+                $file_name=pathinfo($fwe,PATHINFO_FILENAME);
+                $publicId="Blog_uploads/temp_images/".$file_name;
+                $newPublicId="Blog_uploads/blog_images/".$file_name;
+                Cloudinary::destroy($newPublicId);
+                Cloudinary::rename($publicId,$newPublicId);
+                $newUrl=cloudinary()->getUrl($newPublicId);
+                $blog->image=$newUrl;
+                $blog->save();
+            }catch(\Throwable $e){
+                return response()->json([
+                'status'=>false,
+                'message'=>'Image Upload unsuccessful',
+                'error'=>$e->getMessage(),
+                ],500);
+            }
         }
         return response()->json([
                 'status'=>true,
@@ -130,7 +154,15 @@ class BlogController extends Controller
                 'message'=>'Blog not found.'
             ]);
         }
-        File::delete(public_path('uploads/blogs/'.$blog->image));
+        if($blog->image!=null){
+            $url=$blog->image;
+            $path=parse_url($url,PHP_URL_PATH);
+            $segment=explode('/',$path);
+            $fwe=end($segment);
+            $file_name=pathinfo($fwe,PATHINFO_FILENAME);
+            $newPublicId="Blog_uploads/blog_images/".$file_name;
+            Cloudinary::destroy($newPublicId);
+        }
         $blog->delete();
         return response()->json([
                 'status'=>true,
