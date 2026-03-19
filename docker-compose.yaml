@@ -1,0 +1,47 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-backend
+    container_name: blog-backend
+    ports:
+        - "8000:8000"
+    depends_on:
+        - mysql
+    env_file:
+        - ./blog-app-backend/.env
+    volumes:
+        - ./blog-app-backend:/app
+    command: >
+      sh -c "
+      sleep 10 &&
+      php artisan migrate --force &&
+      php artisan serve --host=0.0.0.0 --port=8000
+      "
+      
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-frontend
+    container_name: blog-frontend
+    ports: 
+      - "5173:5173"
+    depends_on:
+      - backend
+    env_file:
+      - ./react-blog-frontend/.env
+    volumes:
+      - ./react-blog-frontend:/app
+  
+  mysql:
+    image: mysql:5.7
+    container_name: blog-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: blog_db
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:

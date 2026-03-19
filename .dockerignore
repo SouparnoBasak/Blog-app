@@ -1,0 +1,11 @@
+.git
+.gitignore
+node_modules
+npm-debug.log
+storage/logs
+storage/framework/cache
+storage/framework/sessions
+storage/framework/views
+
+blog-app-backend/.env
+blog-app-backend/.env.*

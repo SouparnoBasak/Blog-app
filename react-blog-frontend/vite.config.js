@@ -5,5 +5,5 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   //"Blog-app/react-blog-frontend"
-  base: process.env.VITE_BASE_PATH || "Blog-app/react-blog-frontend"
+  base: '/'
 })
